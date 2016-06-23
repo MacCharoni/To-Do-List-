@@ -8,20 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		6BAF416E1D035D8600DE83B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BAF416D1D035D8600DE83B1 /* AppDelegate.swift */; };
-		6BAF41701D035D8600DE83B1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BAF416F1D035D8600DE83B1 /* ViewController.swift */; };
 		6BAF41731D035D8600DE83B1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6BAF41711D035D8600DE83B1 /* Main.storyboard */; };
 		6BAF41751D035D8700DE83B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6BAF41741D035D8700DE83B1 /* Assets.xcassets */; };
 		6BAF41781D035D8700DE83B1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6BAF41761D035D8700DE83B1 /* LaunchScreen.storyboard */; };
+		6BAF41801D03628700DE83B1 /* MasterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BAF417F1D03628700DE83B1 /* MasterTableViewController.swift */; };
+		6BAF41821D03631C00DE83B1 /* AddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BAF41811D03631C00DE83B1 /* AddViewController.swift */; };
+		6BAF41841D03635400DE83B1 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BAF41831D03635400DE83B1 /* DetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		6BAF416A1D035D8600DE83B1 /* ToDo App 2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ToDo App 2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6BAF416D1D035D8600DE83B1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6BAF416F1D035D8600DE83B1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		6BAF41721D035D8600DE83B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6BAF41741D035D8700DE83B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6BAF41771D035D8700DE83B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6BAF41791D035D8700DE83B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6BAF417F1D03628700DE83B1 /* MasterTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterTableViewController.swift; sourceTree = "<group>"; };
+		6BAF41811D03631C00DE83B1 /* AddViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddViewController.swift; sourceTree = "<group>"; };
+		6BAF41831D03635400DE83B1 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,8 +59,10 @@
 			isa = PBXGroup;
 			children = (
 				6BAF416D1D035D8600DE83B1 /* AppDelegate.swift */,
-				6BAF416F1D035D8600DE83B1 /* ViewController.swift */,
 				6BAF41711D035D8600DE83B1 /* Main.storyboard */,
+				6BAF41831D03635400DE83B1 /* DetailViewController.swift */,
+				6BAF41811D03631C00DE83B1 /* AddViewController.swift */,
+				6BAF417F1D03628700DE83B1 /* MasterTableViewController.swift */,
 				6BAF41741D035D8700DE83B1 /* Assets.xcassets */,
 				6BAF41761D035D8700DE83B1 /* LaunchScreen.storyboard */,
 				6BAF41791D035D8700DE83B1 /* Info.plist */,
@@ -136,7 +142,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6BAF41701D035D8600DE83B1 /* ViewController.swift in Sources */,
+				6BAF41801D03628700DE83B1 /* MasterTableViewController.swift in Sources */,
+				6BAF41841D03635400DE83B1 /* DetailViewController.swift in Sources */,
+				6BAF41821D03631C00DE83B1 /* AddViewController.swift in Sources */,
 				6BAF416E1D035D8600DE83B1 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -287,6 +295,7 @@
 				6BAF417E1D035D8700DE83B1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
