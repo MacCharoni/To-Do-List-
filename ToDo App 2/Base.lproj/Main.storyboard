@@ -82,10 +82,18 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <toolbarItems>
-                        <barButtonItem systemItem="trash" id="wNv-Il-37e"/>
+                        <barButtonItem systemItem="trash" id="wNv-Il-37e">
+                            <connections>
+                                <action selector="deleteButtonTapped:" destination="YNO-2U-1cB" id="6XW-7R-jOG"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="7ur-FX-tEy">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="fzm-mU-Tr7"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="fzm-mU-Tr7">
+                            <connections>
+                                <action selector="cancelButtonTapped:" destination="YNO-2U-1cB" id="Ty0-dG-Zpd"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="XEu-eV-udV">
                             <connections>
                                 <action selector="saveButtonTapped:" destination="YNO-2U-1cB" id="uJ6-ha-D0E"/>
@@ -123,6 +131,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="zSf-Zv-q20"/>
+        <segue reference="eAv-82-htX"/>
     </inferredMetricsTieBreakers>
 </document>

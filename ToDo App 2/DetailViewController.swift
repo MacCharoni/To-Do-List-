@@ -8,39 +8,23 @@
 
 import UIKit
 
-protocol AddViewControllerDelegate {
+protocol DetailViewControllerDelegate {
     func addItem(title: String, notes: String)
+    func deleteItem(row: Int)
+    func editItem(title: String, notes: String,row: Int)
 }
+
 
 class DetailViewController: UIViewController {
     
     var isEditingItem = true
-    var delegate: AddViewControllerDelegate?
-    
-   // var toDoData = [String: AnyObject]()
-    
+    var delegate: DetailViewControllerDelegate?
+    var selectedRow = 0
     var selectedToDoItem = [String: AnyObject]()
 
     @IBOutlet weak var titleTextField: UITextField! = UITextField()
     @IBOutlet weak var notesTextView: UITextView! = UITextView()
     @IBOutlet weak var deleteBarButtonItem: UIBarButtonItem!
-   
-    @IBAction func deleteItem(sender: AnyObject) {
-       /* let userDefaults: NSUserDefaults = NSUserDefaults()
-        let itemListArray: NSMutableArray = userDefaults.objectForKey("itemList") as! NSMutableArray
-        let mutableItemList: NSMutableArray = NSMutableArray()
-        
-        for dict: AnyObject in itemListArray{
-            mutableItemList.addObject(dict as! NSDictionary)
-        }
-        
-    mutableItemList.removeObject(toDoData)
-    userDefaults.removeObjectForKey("itemList")
-    userDefaults.setObject(mutableItemList, forKey: "itemList")
-    */
-    self.navigationController?.popToRootViewControllerAnimated(true)
-        
-    }
     
     
     override func viewDidLoad() {
@@ -57,14 +41,30 @@ class DetailViewController: UIViewController {
     }
 
     
+    @IBAction func deleteButtonTapped(sender: AnyObject) {
+        delegate?.deleteItem(selectedRow)
+        print(selectedRow)
+        self.navigationController?.popToRootViewControllerAnimated(true)
+        return
+    }
+ 
+    @IBAction func cancelButtonTapped(sender: AnyObject) {
+        self.navigationController?.popToRootViewControllerAnimated(true)
+        return
+    }
     
     
     @IBAction func saveButtonTapped(sender: AnyObject) {
-        delegate?.addItem(titleTextField.text!, notes: notesTextView.text!)
+        if (!isEditingItem){
+            delegate?.addItem(titleTextField.text!, notes: notesTextView.text!)
+        }
+        else {
+            print(isEditingItem)
+            delegate?.editItem(titleTextField.text!, notes: notesTextView.text!, row: selectedRow)
+            
+        }
         self.navigationController?.popToRootViewControllerAnimated(true)
         return
-        //let userDefaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
-        //var itemList = userDefaults.objectForKey("itemList") as? [String: AnyObject]
     }
     
     

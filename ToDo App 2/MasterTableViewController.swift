@@ -4,37 +4,60 @@
 //
 //  Created by Mekong Lam on 04.06.16.
 //  Copyright © 2016 Mekong Lam. All rights reserved.
-//
+
 
 import UIKit
+import SpriteKit
+import AVFoundation
 
-class MasterTableViewController: UITableViewController, AddViewControllerDelegate {
+class MasterTableViewController: UITableViewController, DetailViewControllerDelegate {
     //Erstelle ein dictionary 'toDoItems'
     var toDoItemsList = [AnyObject]()
     let itemTitle = [AnyObject]()
     let itemNotes = [String]()
+    var randomItemsList = [AnyObject]()
+    var audioPlayer: AVAudioPlayer!
+
+    
+
     
     override func viewDidAppear(animated:Bool){
         //initialisiere UserDefaults
         let userDefaults = NSUserDefaults.standardUserDefaults()
         //Erstelle eine dictionary namens itemListfromUserDefaults, die im userDefaults unter dem key 'itemList' abgespeichert wird
-        
-        //Wenn itemListfromUserDefaults nicht leer ist, dann speichere es in toDoItems ab
+        //Wenn itemListfromUserDefaults nicht leer ist, dann speichere es in toDoItemsList ab
         if let itemListFromUserDefaults = userDefaults.objectForKey("itemList") as? [AnyObject] {
             toDoItemsList = itemListFromUserDefaults
         }
+        if let randomItemListFromUserDefaults = userDefaults.objectForKey("randomItemList") as? [AnyObject] {
+            randomItemsList = randomItemListFromUserDefaults
+        }
         
         self.tableView.reloadData()
+        
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        let screamSound = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("scream", ofType: "mp3")!)
+        audioPlayer = try! AVAudioPlayer(contentsOfURL:screamSound)
+        
+        var randomItem1 = [String: String]()
+        randomItem1["itemTitle"] = "Zähne putzen"
+        randomItem1["itemNote"] = "Ne, Idee wofür Zahnbürsten gut sind?"
+        randomItemsList.append(randomItem1)
+        var randomItem2 = [String: String]()
+        randomItem2["itemTitle"] = "Mich öfter benutzen"
+        randomItem2["itemNote"] = "Wenn du schon nicht auf deine Mutter hörst, dann gefälligst auf mich"
+        randomItemsList.append(randomItem2)
+        var randomItem3 = [String: String]()
+        randomItem3["itemTitle"] = "Dusch' mal, du stinkst!"
+        randomItem3["itemNote"] = "Wenn du schon nicht auf deine Mutter hörst, dann gefälligst auf mich"
+        randomItemsList.append(randomItem3)
+        var randomItem4 = [String: String]()
+        randomItem4["itemTitle"] = "Was kannst du eigentlich?"
+        randomItem4["itemNote"] = "Wenn du schon nicht auf deine Mutter hörst, dann gefälligst auf mich"
+        randomItemsList.append(randomItem3)
     }
     
 
@@ -45,18 +68,47 @@ class MasterTableViewController: UITableViewController, AddViewControllerDelegat
     }
     
     func addItem(title: String, notes: String) {
-        //let dataSet = [ "itemTitle": title, "itemNote" : notes ]
-        //toDoItems += [dataSet]
         var toDoItem = [String: AnyObject]()
         toDoItem["itemTitle"] = title
         toDoItem["itemNote"] = notes
-        
         // add toDoItem to toDoItemsList
         toDoItemsList.append(toDoItem)
-        
+        let listSize = UInt32 (randomItemsList.count)
+        print("randomItemList.count:\(listSize)")
+        if (arc4random_uniform(5) < 5 ){
+            
+            let randomNumber = Int(arc4random_uniform(listSize))
+            
+            toDoItemsList.append(randomItemsList[randomNumber])
+        }
         NSUserDefaults.standardUserDefaults().setObject(toDoItemsList, forKey: "itemList")
         print(title)
         tableView.reloadData()
+    }
+    
+    func deleteItem(row: Int) {
+            audioPlayer.play()
+        
+        
+        toDoItemsList.removeAtIndex(row)
+        NSUserDefaults.standardUserDefaults().setObject(toDoItemsList, forKey: "itemList")
+        let listSize = UInt32 (randomItemsList.count)
+        print("randomItemList.count:\(listSize)")
+        if (arc4random_uniform(5) < 5 ){
+            
+            let randomNumber = Int(arc4random_uniform(listSize))
+            
+            toDoItemsList.append(randomItemsList[randomNumber])
+        }
+        NSUserDefaults.standardUserDefaults().setObject(toDoItemsList, forKey: "itemList")
+        tableView.reloadData()
+    }
+    
+    func editItem(title: String, notes: String,row: Int) {
+        var toDoItem = [String: AnyObject]()
+        toDoItem["itemTitle"] = title
+        toDoItem["itemNote"] = notes
+        toDoItemsList.insert(toDoItem, atIndex: row)
     }
 
     // MARK: - Table view data source
@@ -74,15 +126,9 @@ class MasterTableViewController: UITableViewController, AddViewControllerDelegat
        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
         
         let Item = toDoItemsList[indexPath.row]
-        let itemTitle = Item["itemTitle"]
-        print("itemTitle: \(itemTitle)")
-        let itemNotes = Item["itemNote"]
-        // print("itemNotes: \(itemNotes)")
-        //let toDoItem = toDoItems.values(indexPath.row) as! Dictionary
+        let itemTitle = Item["itemTitle"] as? String
+        let itemNotes = Item["itemNote"] as? String
         cell.textLabel?.text = itemTitle as? String
-        //print("Titel im Cell: \(indexPath.row)")
-        //cell.textLabel?.text = toDoItem.objectForKey("itemTitle") as? String
-        
         return cell
     }
 
@@ -128,6 +174,7 @@ class MasterTableViewController: UITableViewController, AddViewControllerDelegat
 //            detailViewController.toDoData = [itemTitle[selectedIndexPath.row] as! String: itemNotes[selectedIndexPath.row]]
 //        }
         if let viewController = segue.destinationViewController as? DetailViewController where segue.identifier == "addItem" {
+            //print("test")
             viewController.delegate = self
             viewController.isEditingItem = false
 
@@ -136,11 +183,13 @@ class MasterTableViewController: UITableViewController, AddViewControllerDelegat
             let selectedIndexPath = tableView.indexPathForSelectedRow
             let selectedRow = selectedIndexPath!.row
             // get selected row from index path
-            // get correct toDoItem from toDoItemsList
             let selectedToDoItem = toDoItemsList[selectedRow]
+            // get correct toDoItem from toDoItemsList
             // pass toDoItem to destinationViewController
             viewController.selectedToDoItem = selectedToDoItem as! [String : AnyObject]
+            viewController.selectedRow = selectedRow
             viewController.isEditingItem = true
+            viewController.delegate = self
             
             
         }
