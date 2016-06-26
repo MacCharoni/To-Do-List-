@@ -7,15 +7,14 @@
 
 
 import UIKit
-import SpriteKit
 import AVFoundation
 
 class MasterTableViewController: UITableViewController, DetailViewControllerDelegate {
-    //Erstelle ein dictionary 'toDoItems'
+    //Für die Übergabe der eingetragenen ToDoItems erstelle einen globalen Array toDoItemsList
     var toDoItemsList = [AnyObject]()
-    let itemTitle = [AnyObject]()
-    let itemNotes = [String]()
+    //Für die Übergabe der randomToDos, erstelle eine randomItemsList
     var randomItemsList = [AnyObject]()
+    //Für den Sound, erstelle einen globalen Audioplayer
     var audioPlayer: AVAudioPlayer!
 
     
@@ -24,11 +23,12 @@ class MasterTableViewController: UITableViewController, DetailViewControllerDele
     override func viewDidAppear(animated:Bool){
         //initialisiere UserDefaults
         let userDefaults = NSUserDefaults.standardUserDefaults()
-        //Erstelle eine dictionary namens itemListfromUserDefaults, die im userDefaults unter dem key 'itemList' abgespeichert wird
-        //Wenn itemListfromUserDefaults nicht leer ist, dann speichere es in toDoItemsList ab
+        //Erstelle ein Dictionary namens itemListfromUserDefaults, die im userDefaults unter dem key 'itemList' abgespeichert wird
+        //Wenn itemListfromUserDefaults nicht leer ist, dann speichere es in toDoItemsList ab.
         if let itemListFromUserDefaults = userDefaults.objectForKey("itemList") as? [AnyObject] {
             toDoItemsList = itemListFromUserDefaults
         }
+        //Erstelle analog dazu die randomItemList
         if let randomItemListFromUserDefaults = userDefaults.objectForKey("randomItemList") as? [AnyObject] {
             randomItemsList = randomItemListFromUserDefaults
         }
@@ -39,9 +39,10 @@ class MasterTableViewController: UITableViewController, DetailViewControllerDele
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Initialisiere den Audioplayer mit der Sounddatei
         let screamSound = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("scream", ofType: "mp3")!)
         audioPlayer = try! AVAudioPlayer(contentsOfURL:screamSound)
-        
+        //Befülle die randomToDoItemsListe mit einzelnen toDoItems in Form von Dictionaries
         var randomItem1 = [String: String]()
         randomItem1["itemTitle"] = "Zähne putzen"
         randomItem1["itemNote"] = "Ne, Idee wofür Zahnbürsten gut sind?"
@@ -68,11 +69,12 @@ class MasterTableViewController: UITableViewController, DetailViewControllerDele
     }
     
     func addItem(title: String, notes: String) {
+        //speichere den eingetippten Titel und die Notizen der ToDoListe in die allgemeine toDoItemsList hinzu
         var toDoItem = [String: AnyObject]()
         toDoItem["itemTitle"] = title
         toDoItem["itemNote"] = notes
-        // add toDoItem to toDoItemsList
         toDoItemsList.append(toDoItem)
+        //Füge wahllos, nach jedem neuen Eintrag noch zusätzlich toDoItems aus der randomToDoItemsList hinzu, die zufällig ausgewählt werden
         let listSize = UInt32 (randomItemsList.count)
         print("randomItemList.count:\(listSize)")
         if (arc4random_uniform(5) < 5 ){
@@ -82,18 +84,18 @@ class MasterTableViewController: UITableViewController, DetailViewControllerDele
             toDoItemsList.append(randomItemsList[randomNumber])
         }
         NSUserDefaults.standardUserDefaults().setObject(toDoItemsList, forKey: "itemList")
-        print(title)
         tableView.reloadData()
     }
     
     func deleteItem(row: Int) {
-            audioPlayer.play()
-        
-        
+        //Spiele den Sound bei jedem gelöschten Eintrag ab
+        audioPlayer.play()
+        //entferne das ToDoItem aus der zuvor ausgewählten Reihe
         toDoItemsList.removeAtIndex(row)
+        //aktualisiere die toDoItemsList im NSUserDefaults
         NSUserDefaults.standardUserDefaults().setObject(toDoItemsList, forKey: "itemList")
+        //Füge wahllos, nach jedem gelöschten Eintrag noch zusätzlich toDoItems aus der randomToDoItemsList hinzu, die zufällig ausgewählt werden
         let listSize = UInt32 (randomItemsList.count)
-        print("randomItemList.count:\(listSize)")
         if (arc4random_uniform(5) < 5 ){
             
             let randomNumber = Int(arc4random_uniform(listSize))
@@ -105,6 +107,7 @@ class MasterTableViewController: UITableViewController, DetailViewControllerDele
     }
     
     func editItem(title: String, notes: String,row: Int) {
+        //Dieses editItem hat mal funktioniert.. ich habe allerdings leider nicht herausfinden können warum es nicht klappt, ich befürchte dass es an meinen beiden segues liegt und dem evtl nicht korrekt aktualisierten boolean "editItem". Aus Zeitmangel, dachte ich dass diese Missfunktion meiner nervigen ToDoListenApp bloß noch mehr Charakter gibt :)
         var toDoItem = [String: AnyObject]()
         toDoItem["itemTitle"] = title
         toDoItem["itemNote"] = notes
@@ -124,10 +127,10 @@ class MasterTableViewController: UITableViewController, DetailViewControllerDele
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
-        
+        //Befülle die tableView Reihen mit den Itemtiteln aus der toDoItemsList
         let Item = toDoItemsList[indexPath.row]
-        let itemTitle = Item["itemTitle"] as? String
-        let itemNotes = Item["itemNote"] as? String
+        let itemTitle = Item["itemTitle"]
+        let itemNotes = Item["itemNote"]
         cell.textLabel?.text = itemTitle as? String
         return cell
     }
@@ -174,12 +177,15 @@ class MasterTableViewController: UITableViewController, DetailViewControllerDele
 //            detailViewController.toDoData = [itemTitle[selectedIndexPath.row] as! String: itemNotes[selectedIndexPath.row]]
 //        }
         if let viewController = segue.destinationViewController as? DetailViewController where segue.identifier == "addItem" {
-            //print("test")
+            
+            //übergebe dem segue addItem den delegate und stelle mit isEditingItem = false sicher, dass die Löschoption beim Erstellen neuer Items nicht möglich ist
             viewController.delegate = self
             viewController.isEditingItem = false
 
         }
         else if let viewController = segue.destinationViewController as? DetailViewController where segue.identifier == "editItem" {
+            //übergebe für die Bearbeitung der toDoItems die benötigten Daten
+            viewController.delegate = self
             let selectedIndexPath = tableView.indexPathForSelectedRow
             let selectedRow = selectedIndexPath!.row
             // get selected row from index path
@@ -189,7 +195,7 @@ class MasterTableViewController: UITableViewController, DetailViewControllerDele
             viewController.selectedToDoItem = selectedToDoItem as! [String : AnyObject]
             viewController.selectedRow = selectedRow
             viewController.isEditingItem = true
-            viewController.delegate = self
+            
             
             
         }

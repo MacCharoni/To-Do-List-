@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+//Delegiere all die Aufgaben an den MasterTableViewController
 protocol DetailViewControllerDelegate {
     func addItem(title: String, notes: String)
     func deleteItem(row: Int)
@@ -16,8 +16,7 @@ protocol DetailViewControllerDelegate {
 
 
 class DetailViewController: UIViewController {
-    
-    var isEditingItem = true
+    var isEditingItem = false
     var delegate: DetailViewControllerDelegate?
     var selectedRow = 0
     var selectedToDoItem = [String: AnyObject]()
@@ -59,7 +58,6 @@ class DetailViewController: UIViewController {
             delegate?.addItem(titleTextField.text!, notes: notesTextView.text!)
         }
         else {
-            print(isEditingItem)
             delegate?.editItem(titleTextField.text!, notes: notesTextView.text!, row: selectedRow)
             
         }
